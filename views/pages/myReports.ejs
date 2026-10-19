@@ -1,0 +1,46 @@
+<%- include('../partials/header', { title: 'My Reports - Flood Safe Routes', user: user }) %>
+
+<div class="container">
+  <%- include('../partials/messages') %>
+
+  <div class="page-header">
+    <h1>📋 My Flood Reports</h1>
+    <p class="muted">All flood reports you've submitted and their current verification status.</p>
+    <a href="/report" class="btn btn-primary">+ Submit New Report</a>
+  </div>
+
+  <% if (reports && reports.length > 0) { %>
+    <div class="report-history-grid">
+      <% reports.forEach(r => { %>
+        <div class="report-card">
+          <div class="report-head">
+            <strong><%= r.road_name || r.location %></strong>
+            <span class="badge badge-<%= r.severity.toLowerCase() %>"><%= r.severity %></span>
+          </div>
+          <p class="muted"><%= r.location %></p>
+          <p><%= r.description || 'No description provided.' %></p>
+
+          <% if (r.image_url) { %>
+            <img src="<%= r.image_url %>" alt="Flood report" class="report-thumb">
+          <% } %>
+
+          <div class="report-meta">
+            <span class="badge badge-status-<%= r.status %>"><%= r.status %></span>
+            <small class="muted"><%= new Date(r.reported_at).toLocaleString() %></small>
+          </div>
+
+          <small class="muted">
+            📍 <%= r.latitude.toFixed(5) %>, <%= r.longitude.toFixed(5) %>
+          </small>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <p>You haven't submitted any flood reports yet.</p>
+      <a href="/report" class="btn btn-primary">Submit your first report</a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,81 @@
+<%- include('../partials/header', { title: 'Notifications - Flood Safe Routes', user: user }) %>
+
+<div class="container">
+  <%- include('../partials/messages') %>
+
+  <div class="page-header notif-page-header">
+    <div>
+      <h1>🔔 Notifications</h1>
+      <p class="muted">Flood warnings, route alerts, and system messages.</p>
+    </div>
+    <% if (notifications.some(n => n.status === 'unread')) { %>
+      <form action="/notifications/mark-all-read" method="POST" id="markAllForm" style="display:inline;">
+        <button type="button" class="btn btn-secondary" id="markAllBtn">Mark all as read</button>
+      </form>
+    <% } %>
+  </div>
+
+  <div class="dashboard-section">
+    <% if (notifications && notifications.length > 0) { %>
+      <ul class="notif-list">
+        <% notifications.forEach(n => { %>
+          <li class="notif-item <%= n.status === 'unread' ? 'unread' : '' %>" data-id="<%= n._id %>">
+            <div class="notif-icon type-<%= n.type %>">
+              <%= n.type === 'flood_warning' ? '🌊' : n.type === 'route_warning' ? '🧭' : 'ℹ️' %>
+            </div>
+            <div class="notif-body">
+              <div class="notif-head">
+                <strong><%= n.title %></strong>
+                <% if (n.status === 'unread') { %>
+                  <span class="badge badge-status-pending">new</span>
+                <% } %>
+              </div>
+              <p><%= n.message %></p>
+              <small class="muted"><%= new Date(n.created_at).toLocaleString() %></small>
+            </div>
+            <div class="notif-actions">
+              <% if (n.status === 'unread') { %>
+                <button type="button" class="btn btn-small btn-secondary js-mark-read" data-id="<%= n._id %>">Mark read</button>
+              <% } %>
+              <button type="button" class="btn btn-small btn-danger js-delete" data-id="<%= n._id %>">Delete</button>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <div class="empty-state">
+        <p>You have no notifications yet.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script>
+  // Small page-local enhancement so we don't depend on /js/notifications.js here.
+  document.querySelectorAll('.js-mark-read').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      await fetch(`/api/notifications/${id}/read`, { method: 'POST' });
+      location.reload();
+    });
+  });
+
+  document.querySelectorAll('.js-delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      if (!confirm('Delete this notification?')) return;
+      await fetch(`/api/notifications/${id}/delete`, { method: 'POST' });
+      location.reload();
+    });
+  });
+
+  const markAllBtn = document.getElementById('markAllBtn');
+  if (markAllBtn) {
+    markAllBtn.addEventListener('click', async () => {
+      await fetch('/api/notifications/read-all', { method: 'POST' });
+      location.reload();
+    });
+  }
+</script>

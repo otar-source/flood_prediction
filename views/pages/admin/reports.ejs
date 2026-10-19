@@ -1,0 +1,69 @@
+<%- include('../../partials/header', { title: 'Review Reports', user: user }) %>
+
+<div class="container">
+  <%- include('../../partials/messages') %>
+
+  <div class="page-header">
+    <h1>📋 Review Flood Reports</h1>
+    <p class="muted">Verify or reject reports submitted by users. Verified reports become public on the map.</p>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <a href="/admin/reports" class="tab <%= filterStatus === 'all' ? 'active' : '' %>">All</a>
+    <a href="/admin/reports?status=pending" class="tab <%= filterStatus === 'pending' ? 'active' : '' %>">Pending</a>
+    <a href="/admin/reports?status=verified" class="tab <%= filterStatus === 'verified' ? 'active' : '' %>">Verified</a>
+    <a href="/admin/reports?status=rejected" class="tab <%= filterStatus === 'rejected' ? 'active' : '' %>">Rejected</a>
+  </div>
+
+  <% if (reports && reports.length > 0) { %>
+    <div class="admin-report-list">
+      <% reports.forEach(r => { %>
+        <div class="admin-report-card status-<%= r.status %>">
+          <div class="admin-report-head">
+            <div>
+              <strong><%= r.road_name || r.location %></strong>
+              <span class="badge badge-<%= r.severity.toLowerCase() %>"><%= r.severity %></span>
+              <span class="badge badge-status-<%= r.status %>"><%= r.status %></span>
+            </div>
+            <small class="muted"><%= new Date(r.reported_at).toLocaleString() %></small>
+          </div>
+
+          <p class="muted">
+            Reported by <strong><%= r.user_id ? r.user_id.name : 'Unknown' %></strong>
+            (<%= r.user_id ? r.user_id.email : '—' %>)
+          </p>
+          <p><%= r.description || 'No description provided.' %></p>
+
+          <% if (r.image_url) { %>
+            <img src="<%= r.image_url %>" alt="flood photo" class="report-thumb">
+          <% } %>
+
+          <p class="muted">📍 <%= r.latitude.toFixed(5) %>, <%= r.longitude.toFixed(5) %></p>
+
+          <% if (r.status === 'rejected' && r.rejection_reason) { %>
+            <p class="muted">❌ <strong>Rejection reason:</strong> <%= r.rejection_reason %></p>
+          <% } %>
+
+          <% if (r.status === 'pending') { %>
+            <div class="admin-report-actions">
+              <form action="/admin/reports/<%= r._id %>/verify" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-primary btn-small">✅ Verify</button>
+              </form>
+              <form action="/admin/reports/<%= r._id %>/reject" method="POST" class="reject-form" style="display:inline;">
+                <input type="text" name="reason" placeholder="Reason for rejection" maxlength="300" required>
+                <button type="submit" class="btn btn-danger btn-small">❌ Reject</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <p>No reports match the selected filter.</p>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../../partials/footer') %>

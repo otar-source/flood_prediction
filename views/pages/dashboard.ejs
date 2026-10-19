@@ -1,0 +1,159 @@
+<%- include('../partials/header', { title: 'Dashboard - Flood Safe Routes', user: user }) %>
+
+<div class="dashboard-container">
+
+  <%- include('../partials/messages') %>
+
+  <div class="dashboard-header">
+    <h1>Welcome, <%= user.name %> 👋</h1>
+    <p class="muted">Here is your community flood status overview.</p>
+  </div>
+
+  <!-- Route search box -->
+  <section class="dashboard-section">
+    <h2>🔎 Find a Safe Route</h2>
+    <form action="/route" method="GET" class="route-search-form">
+      <input type="text" name="origin" placeholder="Origin (e.g., Aba Road)" required>
+      <input type="text" name="destination" placeholder="Destination (e.g., Trans-Amadi)" required>
+      <button type="submit" class="btn btn-primary">Check Route</button>
+    </form>
+  </section>
+
+    <!-- Notifications widget -->
+  <section class="dashboard-section">
+    <div class="widget-head">
+      <h2>🔔 Recent Notifications</h2>
+      <a href="/notifications" class="muted">View all →</a>
+    </div>
+    <div id="dashNotifBox" class="dash-notif-box">
+      <p class="muted">Loading…</p>
+    </div>
+  </section>
+
+  <script>
+    (async () => {
+      const box = document.getElementById('dashNotifBox');
+      if (!box) return;
+      try {
+        const r = await fetch('/api/notifications', { headers: { Accept: 'application/json' } });
+        const d = await r.json();
+        const items = (d.notifications || []).slice(0, 3);
+        if (!items.length) { box.innerHTML = '<p class="muted">No notifications yet.</p>'; return; }
+        const esc = (s) => String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        box.innerHTML = items.map(n => `
+          <div class="dash-notif ${n.status === 'unread' ? 'unread' : ''}">
+            <div class="dash-notif-title">${esc(n.title)}</div>
+            <div class="dash-notif-msg">${esc(n.message)}</div>
+            <div class="dash-notif-time">${new Date(n.created_at).toLocaleString()}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        box.innerHTML = '<p class="muted">Failed to load notifications.</p>';
+      }
+    })();
+  </script>
+
+  <!-- Flood warnings -->
+  <section class="dashboard-section">
+    <h2>⚠️ Current Flood Warnings</h2>
+    <% if (warnings && warnings.length > 0) { %>
+      <ul class="warning-list">
+        <% warnings.forEach(w => { %>
+          <li class="warning-item risk-<%= w.risk_level.toLowerCase() %>">
+            <div class="warning-head">
+              <strong><%= w.location %></strong>
+              <span class="badge badge-<%= w.risk_level.toLowerCase() %>"><%= w.risk_level %> Risk</span>
+            </div>
+            <div class="warning-body">
+              Rainfall: <%= w.rainfall_value %> mm &middot; Confidence: <%= w.confidence %>%
+              <span class="muted">&middot; <%= new Date(w.prediction_date).toLocaleString() %></span>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p class="muted">No active flood warnings right now.</p>
+    <% } %>
+  </section>
+
+  <!-- Recent verified reports -->
+  <section class="dashboard-section">
+    <h2>✅ Recent Verified Reports</h2>
+    <% if (recentReports && recentReports.length > 0) { %>
+      <div class="report-grid">
+        <% recentReports.forEach(r => { %>
+          <div class="report-card">
+            <div class="report-head">
+              <strong><%= r.road_name || r.location %></strong>
+              <span class="badge badge-<%= r.severity.toLowerCase() %>"><%= r.severity %></span>
+            </div>
+            <p><%= r.description || 'No description' %></p>
+            <small class="muted">
+              <%= new Date(r.reported_at).toLocaleString() %> &middot;
+              <%= r.latitude.toFixed(4) %>, <%= r.longitude.toFixed(4) %>
+            </small>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p class="muted">No verified reports yet.</p>
+    <% } %>
+  </section>
+
+  <!-- Flood-risk locations -->
+  <section class="dashboard-section">
+    <h2>🌧️ High-Risk Locations</h2>
+    <% if (highRiskLocations && highRiskLocations.length > 0) { %>
+      <table class="data-table">
+        <thead>
+          <tr><th>Location</th><th>Risk</th><th>Rainfall (mm)</th><th>Predicted</th></tr>
+        </thead>
+        <tbody>
+          <% highRiskLocations.forEach(p => { %>
+            <tr>
+              <td><%= p.location %></td>
+              <td><span class="badge badge-<%= p.risk_level.toLowerCase() %>"><%= p.risk_level %></span></td>
+              <td><%= p.rainfall_value %></td>
+              <td><%= new Date(p.prediction_date).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">No high-risk locations identified.</p>
+    <% } %>
+  </section>
+
+  <!-- User's own reports -->
+  <section class="dashboard-section">
+    <h2>📋 My Submitted Reports</h2>
+    <% if (myReports && myReports.length > 0) { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Road / Location</th><th>Severity</th><th>Status</th><th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% myReports.forEach(r => { %>
+            <tr>
+              <td><%= r.road_name || r.location %></td>
+              <td><span class="badge badge-<%= r.severity.toLowerCase() %>"><%= r.severity %></span></td>
+              <td><span class="badge badge-status-<%= r.status %>"><%= r.status %></span></td>
+              <td><%= new Date(r.reported_at).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">
+        You haven't submitted any reports yet.
+        <a href="/report">Report a flood</a>.
+      </p>
+    <% } %>
+  </section>
+
+</div>
+
+<%- include('../partials/footer') %>

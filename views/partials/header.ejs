@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Flood Safe Routes' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">🌊 Flood Safe Routes</a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/report">Report Flood</a>
+        <a href="/map">Flood Map</a>
+        <a href="/route">Check Route</a>
+
+        <% if (typeof user !== 'undefined' && user && user._id) { %>
+          <!-- Notification bell -->
+          <div class="notif-bell-wrap" id="notifBellWrap">
+            <button type="button" class="notif-bell" id="notifBellBtn" aria-label="Notifications">
+              🔔
+              <span class="notif-badge" id="notifBellBadge" style="display:none;">0</span>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div class="notif-panel" id="notifPanel" style="display:none;">
+              <div class="notif-panel-head">
+                <strong>Notifications</strong>
+                <button type="button" class="notif-panel-close" id="notifPanelClose">✕</button>
+              </div>
+              <div class="notif-panel-body" id="notifPanelBody">
+                <p class="muted">Loading…</p>
+              </div>
+              <div class="notif-panel-foot">
+                <a href="/notifications">View all</a>
+                <button type="button" class="linklike" id="notifMarkAllBtn">Mark all read</button>
+              </div>
+            </div>
+          </div>
+
+          <span class="nav-user">👤 <%= user.name %></span>
+          <% if (user.role === 'admin') { %>
+            <a href="/admin">Admin</a>
+          <% } %>
+          <a href="/logout" class="nav-logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <% if (typeof user !== 'undefined' && user && user._id) { %>
+    <script src="/js/notifications.js"></script>
+  <% } %>
+
+  <main class="main-content">

@@ -1,0 +1,78 @@
+<%- include('../partials/header', { title: 'Report Flood - Flood Safe Routes', user: user }) %>
+
+<div class="container">
+  <div class="page-header">
+    <h1>📝 Report a Flood</h1>
+    <p class="muted">
+      Help your community by reporting flooding on roads. Click the map to set the location,
+      or enter coordinates manually.
+    </p>
+  </div>
+
+  <%- include('../partials/messages') %>
+
+  <div class="report-layout">
+    <!-- Form column -->
+    <div class="report-form-card">
+      <form action="/report" method="POST" enctype="multipart/form-data" id="reportForm">
+        <div class="form-group">
+          <label for="location">Location / Area Name *</label>
+          <input type="text" id="location" name="location" placeholder="e.g., Rumuokwuta, Port Harcourt" required>
+        </div>
+
+        <div class="form-group">
+          <label for="road_name">Road Name</label>
+          <input type="text" id="road_name" name="road_name" placeholder="e.g., Aba Road">
+        </div>
+
+        <div class="form-group">
+          <label for="severity">Severity *</label>
+          <select id="severity" name="severity" required>
+            <option value="">-- Select severity --</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" maxlength="500"
+            placeholder="Describe the flood situation (max 500 chars)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="image">Photo (optional, max 5 MB)</label>
+          <input type="file" id="image" name="image" accept="image/*">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="latitude">Latitude *</label>
+            <input type="number" step="any" id="latitude" name="latitude" required
+              placeholder="e.g., 4.8150">
+          </div>
+          <div class="form-group">
+            <label for="longitude">Longitude *</label>
+            <input type="number" step="any" id="longitude" name="longitude" required
+              placeholder="e.g., 7.0498">
+          </div>
+        </div>
+
+        <p class="muted">💡 Tip: Click anywhere on the map to auto-fill coordinates.</p>
+
+        <button type="submit" class="btn btn-primary">Submit Report</button>
+        <a href="/report/my" class="btn btn-secondary">View My Reports</a>
+      </form>
+    </div>
+
+    <!-- Map column -->
+    <div class="report-map-card">
+      <div id="reportMap"></div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script src="/js/report.js"></script>

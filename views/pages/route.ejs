@@ -1,0 +1,48 @@
+<%- include('../partials/header', { title: 'Check Safe Route - Flood Safe Routes', user: user }) %>
+
+<div class="route-page">
+  <!-- Sidebar -->
+  <aside class="route-sidebar">
+    <h1>🧭 Check Safe Route</h1>
+    <p class="muted">
+      Pick your <strong>origin</strong> and <strong>destination</strong> — either by
+      clicking the map buttons or typing coordinates directly.
+    </p>
+
+    <div class="route-form-group">
+      <label>📍 Origin</label>
+      <div class="coord-row">
+        <input type="number" step="any" id="originLat" placeholder="Latitude">
+        <input type="number" step="any" id="originLng" placeholder="Longitude">
+      </div>
+      <button type="button" id="setOriginBtn" class="btn btn-secondary btn-small">Pick on map</button>
+      <div class="coord-display">Selected: <span id="originLabel">—</span></div>
+    </div>
+
+    <div class="route-form-group">
+      <label>🎯 Destination</label>
+      <div class="coord-row">
+        <input type="number" step="any" id="destLat" placeholder="Latitude">
+        <input type="number" step="any" id="destLng" placeholder="Longitude">
+      </div>
+      <button type="button" id="setDestBtn" class="btn btn-secondary btn-small">Pick on map</button>
+      <div class="coord-display">Selected: <span id="destLabel">—</span></div>
+    </div>
+
+    <div class="route-actions">
+      <button type="button" id="findRouteBtn" class="btn btn-primary">🔍 Find Safe Route</button>
+      <button type="button" id="resetRouteBtn" class="btn btn-secondary">Reset</button>
+    </div>
+
+    <div id="routeResult" class="route-result"></div>
+  </aside>
+
+  <!-- Map -->
+  <div class="route-map-wrap">
+    <div id="routeMap"></div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script src="/js/route.js"></script>

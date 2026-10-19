@@ -1,0 +1,35 @@
+<%- include('../../partials/header', { title: 'System Logs', user: user }) %>
+
+<div class="container">
+  <%- include('../../partials/messages') %>
+
+  <div class="page-header">
+    <h1>📜 System Logs</h1>
+    <p class="muted">Last 300 log entries (newest first).</p>
+  </div>
+
+  <div class="dashboard-section">
+    <% if (logs && logs.length > 0) { %>
+      <table class="data-table">
+        <thead>
+          <tr><th>Time</th><th>User</th><th>Role</th><th>Action</th><th>IP</th></tr>
+        </thead>
+        <tbody>
+          <% logs.forEach(l => { %>
+            <tr>
+              <td><%= new Date(l.timestamp).toLocaleString() %></td>
+              <td><%= l.user_id ? l.user_id.name : 'System' %></td>
+              <td><%= l.user_id ? l.user_id.role : '—' %></td>
+              <td><%= l.action %></td>
+              <td><%= l.ip_address || '—' %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">No logs recorded yet.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,7 @@
+# .renderignore
+.env
+.env.*
+node_modules/
+.git/
+*.log
+uploads/

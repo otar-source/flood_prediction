@@ -1,0 +1,47 @@
+<%- include('../../partials/header', { title: 'Manage Users', user: user }) %>
+
+<div class="container">
+  <%- include('../../partials/messages') %>
+
+  <div class="page-header">
+    <h1>👥 Manage Users</h1>
+    <p class="muted">Activate or deactivate user accounts.</p>
+  </div>
+
+  <div class="dashboard-section">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Email</th><th>Phone</th><th>Role</th>
+          <th>Status</th><th>Created</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+          <tr>
+            <td><%= u.name %></td>
+            <td><%= u.email %></td>
+            <td><%= u.phone %></td>
+            <td><span class="badge badge-<%= u.role === 'admin' ? 'high' : 'low' %>"><%= u.role %></span></td>
+            <td>
+              <span class="badge badge-status-<%= u.status === 'active' ? 'verified' : 'rejected' %>">
+                <%= u.status %>
+              </span>
+            </td>
+            <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+            <td>
+              <form action="/admin/users/<%= u._id %>/toggle" method="POST" style="display:inline;"
+                    onsubmit="return confirm('Change status for <%= u.email %>?');">
+                <button type="submit" class="btn btn-small <%= u.status === 'active' ? 'btn-danger' : 'btn-primary' %>">
+                  <%= u.status === 'active' ? 'Deactivate' : 'Activate' %>
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

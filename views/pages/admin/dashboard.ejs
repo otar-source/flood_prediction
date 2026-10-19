@@ -1,0 +1,96 @@
+<%- include('../../partials/header', { title: 'Admin Dashboard', user: user }) %>
+
+<div class="container">
+  <%- include('../../partials/messages') %>
+
+  <div class="page-header">
+    <h1>🛠️ Admin Dashboard</h1>
+    <p class="muted">Overview of system activity, users, and reports.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.totalUsers %></div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.activeUsers %></div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.pendingReports %></div>
+      <div class="stat-label">Pending Reports</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.verifiedReports %></div>
+      <div class="stat-label">Verified Reports</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.totalReports %></div>
+      <div class="stat-label">Total Reports</div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+    <!-- Quick actions -->
+  <section class="dashboard-section">
+    <h2>Quick Actions</h2>
+    <div class="quick-actions">
+      <a href="/admin/users" class="btn btn-secondary">👥 Manage Users</a>
+      <a href="/admin/reports" class="btn btn-primary">📋 Review Reports (<%= stats.pendingReports %> pending)</a>
+      <a href="/admin/predictions" class="btn btn-secondary">🌧️ View Predictions</a>
+      <form action="/admin/predictions/run" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-primary">▶ Run Prediction</button>
+      </form>
+      <a href="/admin/logs" class="btn btn-secondary">📜 System Logs</a>
+    </div>
+  </section>
+
+  <!-- Recent logs -->
+  <section class="dashboard-section">
+    <h2>🕒 Recent Activity</h2>
+    <% if (recentLogs && recentLogs.length > 0) { %>
+      <table class="data-table">
+        <thead><tr><th>User</th><th>Action</th><th>IP</th><th>Time</th></tr></thead>
+        <tbody>
+          <% recentLogs.forEach(log => { %>
+            <tr>
+              <td><%= log.user_id ? log.user_id.name : 'System' %></td>
+              <td><%= log.action %></td>
+              <td><%= log.ip_address || '—' %></td>
+              <td><%= new Date(log.timestamp).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">No log entries yet.</p>
+    <% } %>
+  </section>
+
+  <!-- Latest predictions -->
+  <section class="dashboard-section">
+    <h2>🌧️ Latest Predictions</h2>
+    <% if (latestPredictions && latestPredictions.length > 0) { %>
+      <table class="data-table">
+        <thead><tr><th>Location</th><th>Risk</th><th>Rainfall (mm)</th><th>Confidence</th><th>Date</th></tr></thead>
+        <tbody>
+          <% latestPredictions.forEach(p => { %>
+            <tr>
+              <td><%= p.location %></td>
+              <td><span class="badge badge-<%= p.risk_level.toLowerCase() %>"><%= p.risk_level %></span></td>
+              <td><%= p.rainfall_value %></td>
+              <td><%= p.confidence %>%</td>
+              <td><%= new Date(p.prediction_date).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">No predictions have been generated yet. (Will be added in Step 7.)</p>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../../partials/footer') %>

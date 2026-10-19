@@ -1,0 +1,38 @@
+<%- include('../partials/header', { title: 'Home - Flood Safe Routes', user: typeof user !== 'undefined' ? user : null }) %>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Community Flood Prediction &amp; Safe Route Recommender</h1>
+    <p class="hero-subtitle">
+      Real-time flood reporting, prediction, and safe routing for Rivers State, Nigeria.
+    </p>
+    <div class="hero-actions">
+      <a href="/register" class="btn btn-primary">Get Started</a>
+      <a href="/login" class="btn btn-secondary">Login</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <h2>What You Can Do</h2>
+  <div class="feature-grid">
+    <a class="feature-card" href="/report">
+      <h3>📝 Report Flood</h3>
+      <p>Report flooding on roads in your community. Help others stay safe.</p>
+    </a>
+    <a class="feature-card" href="/map">
+      <h3>🗺️ Flood Map</h3>
+      <p>View verified flood reports and predicted risk zones on an interactive map.</p>
+    </a>
+    <a class="feature-card" href="/route">
+      <h3>🧭 Check Route</h3>
+      <p>Find a safe route that avoids flooded or high-risk roads.</p>
+    </a>
+    <a class="feature-card" href="/dashboard">
+      <h3>📊 Dashboard</h3>
+      <p>See flood warnings, recent reports, and your submission history.</p>
+    </a>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

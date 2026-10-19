@@ -1,0 +1,53 @@
+<%- include('../partials/header', { title: 'Flood Map - Flood Safe Routes', user: user }) %>
+
+<div class="map-page">
+  <div class="map-toolbar">
+    <div class="map-toolbar-left">
+      <h1>🗺️ Community Flood Map</h1>
+      <span class="muted" id="map-status">Loading…</span>
+    </div>
+    <div class="map-toolbar-right">
+      <label class="toggle">
+        <input type="checkbox" id="toggleReports" checked>
+        <span>Reports</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="togglePredictions" checked>
+        <span>Predictions</span>
+      </label>
+      <button id="refreshBtn" class="btn btn-secondary btn-small">↻ Refresh</button>
+    </div>
+  </div>
+
+  <div id="floodMap"></div>
+
+  <!-- Legend -->
+  <div class="map-legend">
+    <h4>Legend</h4>
+    <div class="legend-row">
+      <span class="legend-dot" style="background:#16a34a;"></span>
+      <span>Low</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-dot" style="background:#f59e0b;"></span>
+      <span>Medium / Moderate</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-dot" style="background:#dc2626;"></span>
+      <span>High</span>
+    </div>
+    <hr>
+    <div class="legend-row">
+      <span class="legend-pin"></span>
+      <span>Verified report</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-circle"></span>
+      <span>Prediction zone</span>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script src="/js/map.js"></script>

@@ -1,0 +1,47 @@
+<%- include('../../partials/header', { title: 'Predictions', user: user }) %>
+
+<div class="container">
+  <%- include('../../partials/messages') %>
+
+  <div class="page-header">
+    <h1>🌧️ Flood Predictions</h1>
+    <p class="muted">
+      Records from the rule-based flood prediction engine (latest 200 entries).
+      Auto-run every 30 minutes.
+    </p>
+    <form action="/admin/predictions/run" method="POST" style="display:inline; margin-top:10px;">
+      <button type="submit" class="btn btn-primary">▶ Run Prediction Now</button>
+    </form>
+  </div>
+
+  <div class="dashboard-section">
+    <% if (predictions && predictions.length > 0) { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Location</th><th>Risk</th><th>Rainfall (mm)</th>
+            <th>Confidence</th><th>Coordinates</th><th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% predictions.forEach(p => { %>
+            <tr>
+              <td><%= p.location %></td>
+              <td><span class="badge badge-<%= p.risk_level.toLowerCase() %>"><%= p.risk_level %></span></td>
+              <td><%= p.rainfall_value %></td>
+              <td><%= p.confidence %>%</td>
+              <td><%= p.latitude.toFixed(4) %>, <%= p.longitude.toFixed(4) %></td>
+              <td><%= new Date(p.prediction_date).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">
+        No predictions yet. Click <strong>Run Prediction Now</strong> above to generate the first batch.
+      </p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

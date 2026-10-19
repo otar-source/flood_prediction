@@ -1,0 +1,11 @@
+<%- include('../partials/header', { title: 'Error - Flood Safe Routes', user: typeof user !== 'undefined' ? user : null }) %>
+
+<div class="container">
+  <div class="error-card">
+    <h1>⚠️ Access Error</h1>
+    <p><%= typeof message !== 'undefined' ? message : 'An error occurred.' %></p>
+    <a href="/" class="btn btn-primary">Back to Home</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
