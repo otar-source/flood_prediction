@@ -149,7 +149,7 @@ const postLogin = async (req, res) => {
 const logout = (req, res) => {
   res.clearCookie('token');
   res.cookie('flash', JSON.stringify({ type: 'success', message: 'Logged out successfully.' }));
-  res.redirect('/login');
+  res.redirect('/');
 };
 
 module.exports = {
